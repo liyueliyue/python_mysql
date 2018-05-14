@@ -33,31 +33,27 @@ class DB():
                                               )
         except :
             print("连接失败")
-    #插入数据
-    def insert_data(self,test_data):
-        #insert into students (id,name,sex,tall)values(3,'liyue','boy','190');
-        for i in test_data:
-            test_data[i] = "'" + str(test_data[i]) + "'"
-        key = ",".join(test_data.keys())
-        value = ",".join(test_data.values())
-        sql = "insert into" + " " + "student"+ "(" + key + ")" + "values" + "(" + value+ ")" + ";"
-        print(sql)
-        """
+    # 查询
+    def select_skg_profit_record(self,sql):
         with self.connection.cursor() as cursor:
             cursor.execute(sql)
+            result = cursor.fetchall()
         self.connection.commit()
-        """
-    #清空数据表
-    def clear_table(self,table_name):
-        sql = "truncate table" + " "+ table_name + ";"
-        with self.connection.cursor() as cursor:
-            cursor.execute(sql=sql)
-        self.connection.commit()
+        return result
     #关闭连接
     def close(self):
         self.connection.close()
 if __name__ == "__main__":
     db = DB()
-    test_data = {"id": "1", "name": "liyue", "sex": "boy", "tall": "190"}
-    db.insert_data(test_data)
+    # 千聊流水表
+    sql = "select profit_type_ as 付费类型类型,profit_obj_ as 收费类型,profits_ as  收费比例,amount_ as 付款金额,money_ as 获利 " +\
+          "from skg_profit_record ORDER BY create_time_ DESC limit 5"
+    data = db.select_skg_profit_record(sql)
+    for i in data:
+        print(i)
+    # print("付费类型类型：",data[0]['profit_type_'])
+    # print("收费类型：",data[0]['profit_obj_'])
+    # print("收费比例：",data[0]['profits_'])
+    # print("付款金额：",data[0]['amount_'])
+    # print("获利：",data[0]['money_'])
 
